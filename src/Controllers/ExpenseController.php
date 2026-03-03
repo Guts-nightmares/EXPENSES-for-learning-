@@ -25,28 +25,30 @@ elseif ($method == 'POST') {
     $cat = $data['category'] ?? '';
 
     if ($desc && $amount && $cat) {
-        $ok = $exp->create($desc, $amount, $cat);
+        $ok = $exp->create($desc, (float)$amount, $cat);
+        http_response_code(201);
         echo json_encode(['ok' => $ok]);
     } else {
         http_response_code(400);
-        echo json_encode(['error' => 'champs manquants']);
+        echo json_encode(['error' => 'Champs manquants (description, montant ou catégorie)']);
     }
 }
 
 elseif ($method == 'DELETE') {
-    parse_str(file_get_contents('php://input'), $data);
+    $input = file_get_contents('php://input');
+    parse_str($input, $data);
     $id = $data['id'] ?? 0;
 
     if ($id) {
-        $ok = $exp->delete($id);
+        $ok = $exp->delete((int)$id);
         echo json_encode(['ok' => $ok]);
     } else {
         http_response_code(400);
-        echo json_encode(['error' => 'id manquant']);
+        echo json_encode(['error' => 'ID manquant pour la suppression']);
     }
 }
 
 else {
     http_response_code(405);
-    echo json_encode(['error' => 'methode pas ok']);
+    echo json_encode(['error' => 'Méthode non autorisée']);
 }

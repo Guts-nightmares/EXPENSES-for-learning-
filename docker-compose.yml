@@ -1,0 +1,40 @@
+services:
+  # Base de données MariaDB
+  db:
+    image: mariadb:10.11
+    container_name: expenses_db_container
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: expenses_db
+      MYSQL_USER: expenses_user
+      MYSQL_PASSWORD: expenses_pass
+    networks:
+      - expenses_network
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+  app:
+    build: .
+    container_name: expenses_php_container
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: expenses_db
+      DB_USER: expenses_user
+      DB_PASS: expenses_pass
+    networks:
+      - expenses_network
+    depends_on:
+      - db
+
+networks:
+  expenses_network:
+    driver: bridge
+
+volumes:
+  db_data:

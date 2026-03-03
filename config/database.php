@@ -2,10 +2,10 @@
 
 return [
     'db' => [
-        'host' => '172.17.0.2',
-        'port' => 3306,
-        'dbname' => 'expenses_db',
-        'user' => 'expenses_user',
-        'password' => 'expenses_pass'
+        'host' => getenv('DB_HOST') ?: '127.0.0.1',
+        'port' => getenv('DB_PORT') ?: 3306,
+        'dbname' => getenv('DB_NAME') ?: 'expenses_db',
+        'user' => getenv('DB_USER') ?: 'root',
+        'password' => getenv('DB_PASS') ?: ''
     ]
 ];
